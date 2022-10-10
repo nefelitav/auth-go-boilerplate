@@ -22,7 +22,6 @@ func Connect() {
     DB, err = gorm.Open(dialect, dbURI)
     DB.Exec("CREATE DATABASE " + dbName)
 
-
     if err != nil {
         log.Fatal(err)
     } else {
