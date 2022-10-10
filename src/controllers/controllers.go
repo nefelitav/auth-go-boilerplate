@@ -5,6 +5,10 @@ import (
     "example/api/database"
     "github.com/gin-gonic/gin"
     "net/http"
+	"strconv"
+	"time"
+	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetUsers(c *gin.Context) {
@@ -25,8 +29,8 @@ func CreateUser(c *gin.Context) {
 	c.BindJSON(&user)
 	var exists models.User
 	result := database.DB.Find(&exists, "Username = ?", user.Username)
-	// fmt.Println(result.RowsAffected)
 	if result.RowsAffected == 0 {
+		user.Password, _ = bcrypt.GenerateFromPassword([]byte(user.Password), 14)
 		database.DB.Create(&user)
 	}
 	c.IndentedJSON(http.StatusOK, &user)
@@ -38,13 +42,32 @@ func Login(c *gin.Context) {
 	var exists models.User
 	result := database.DB.Find(&exists, "Username = ?", user.Username)
 	if result.RowsAffected != 0 {
-		result := database.DB.Find(&exists, "Password = ?", user.Password)
-		if result.RowsAffected != 0 {
-			// session
-			c.IndentedJSON(http.StatusOK, &user)
-		}
+		err := bcrypt.CompareHashAndPassword(exists.Password, user.Password)
+		if err == nil {
+			claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+				Issuer:    strconv.Itoa(int(user.ID)),
+				ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+			})
+		
+			token, err := claims.SignedString([]byte("secret"))
+		
+			if err == nil {
+				c.SetCookie("token", token, 60*60*24, "/", "localhost", false, true)
+				c.IndentedJSON(http.StatusOK, &user)
+			} 
+		} 
 	}
-	c.IndentedJSON(http.StatusNotFound, &user)
+	c.IndentedJSON(http.StatusNotFound, "Not found")
+}
+
+func Logout(c *gin.Context) {
+	c.SetCookie("token", "", 60*60*24, "/", "localhost", false, true)
+	c.IndentedJSON(http.StatusOK, "Successfully logged out")
+}
+
+func DeleteUser(c *gin.Context) {
+	database.DB.Delete(&models.User{}, c.Param("id"))
+	c.IndentedJSON(http.StatusOK, "OK")
 }
 
 func DeleteUsers(c *gin.Context) {
@@ -53,5 +76,4 @@ func DeleteUsers(c *gin.Context) {
 }
 
 func UpdateUser(c *gin.Context) {
-
 }

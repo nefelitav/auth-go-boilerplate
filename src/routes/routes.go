@@ -13,6 +13,8 @@ func Setup(router *gin.Engine) {
 		auth.POST("/register", controllers.CreateUser)
 		auth.POST("/login", controllers.Login)
 		auth.PUT("/profile", controllers.UpdateUser)
+		auth.POST("/logout", controllers.Logout)
 		auth.DELETE("/users", controllers.DeleteUsers)
+		auth.DELETE("/users/:id", controllers.DeleteUser)
 	}
 }
