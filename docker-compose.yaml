@@ -4,10 +4,6 @@ services:
     image: postgres:alpine
     ports:
       - 5432:5432
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=auth
     env_file:
       - ./src/.env
     container_name: db
@@ -18,10 +14,7 @@ services:
     ports:
       - 8080:8080
     container_name: golang
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=auth
-      - DATABASE_PORT=5432
+    env_file:
+      - ./src/.env
     depends_on:
       - db
