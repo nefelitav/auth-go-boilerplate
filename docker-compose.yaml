@@ -1,20 +1,29 @@
 version: "3"
 services:
-  db:
+  auth-go-db:
     image: postgres:alpine
     ports:
       - 5432:5432
-    env_file:
-      - ./src/.env
-    container_name: db
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST}
+    container_name: auth-go-db
     restart: always
-  golang:
-    image: golang
-    build: ./src
+  auth-go-api:
+    build: .
+    image: auth-go-api
     ports:
       - 8080:8080
-    container_name: golang
+    container_name: auth-go-api
     env_file:
-      - ./src/.env
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST}
+      - DATABASE_PORT=${DB_PORT}
     depends_on:
-      - db
+      - auth-go-db
