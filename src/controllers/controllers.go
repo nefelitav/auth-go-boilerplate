@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"example/api/models"
-    "example/api/database"
-    "github.com/gin-gonic/gin"
-    "net/http"
+        "example/api/database"
+    	"github.com/gin-gonic/gin"
+    	"net/http"
 	"strconv"
 	"time"
 	"github.com/dgrijalva/jwt-go"
