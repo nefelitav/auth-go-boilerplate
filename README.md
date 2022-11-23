@@ -1,7 +1,6 @@
-# Auth Boilerplate in Golang
-Minimal authentication boilerplate using Golang, REST and a PostgreSQL database.
+# Authentication Boilerplate in Golang
+Minimal authentication boilerplate using Golang, REST and a PostgreSQL database, deployed with docker-compose.
 
-Run 
 ```
 docker-compose up
 ```
