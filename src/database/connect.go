@@ -12,7 +12,7 @@ var DB *gorm.DB
 var err error
 
 func Connect() {
-	dialect := os.Getenv("DB_DRIVER")
+    dialect := os.Getenv("DB_DRIVER")
     host := os.Getenv("DB_HOST")
     dbPort := os.Getenv("DB_PORT")
     user := os.Getenv("DB_USER")
