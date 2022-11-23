@@ -12,7 +12,7 @@ services:
     container_name: auth-go-db
     restart: always
   auth-go-api:
-    build: .
+    build: ./src
     image: auth-go-api
     ports:
       - 8080:8080

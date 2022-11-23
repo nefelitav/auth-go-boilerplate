@@ -5,7 +5,6 @@ import (
     "log"
     "os"
     "github.com/jinzhu/gorm"
-    "github.com/joho/godotenv"
     _ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
@@ -13,13 +12,6 @@ var DB *gorm.DB
 var err error
 
 func Connect() {
-    err := godotenv.Load(".env")
-    if err != nil {
-        log.Fatal("Error loading .env file")
-    }
-
-    fmt.Println(" ----------------------- " + os.Getenv("DB_DRIVER") + " ------ " + os.Getenv("DB_HOST") + " ------ ")
-
 	dialect := os.Getenv("DB_DRIVER")
     host := os.Getenv("DB_HOST")
     dbPort := os.Getenv("DB_PORT")
